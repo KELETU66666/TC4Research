@@ -70,7 +70,7 @@ public class Proxy implements IGuiHandler {
         NetworkRegistry.INSTANCE.registerGuiHandler(OldResearch.instance, this);
         this.registerDisplayInformation();
 
-        OldResearchManager.parseJsonResearch(new ResourceLocation("oldresearch", "research.json"));
+        ThaumcraftApi.registerResearchLocation(new ResourceLocation("oldresearch", "research.json"));
     }
 
     public void postInit(FMLPostInitializationEvent event) {
