@@ -5,13 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.*;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.wonginnovations.oldresearch.OldResearch;
-import com.wonginnovations.oldresearch.api.research.curio.BaseCurio;
-import com.wonginnovations.oldresearch.api.research.curio.RitesCurio;
 import com.wonginnovations.oldresearch.common.OldResearchUtils;
 import com.wonginnovations.oldresearch.common.items.ModItems;
 import com.wonginnovations.oldresearch.core.mixin.ResearchManagerAccessor;
@@ -31,7 +25,6 @@ import thaumcraft.Thaumcraft;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.capabilities.IPlayerKnowledge;
-import thaumcraft.api.capabilities.IPlayerWarp;
 import thaumcraft.api.items.IScribeTools;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchCategory;
@@ -39,9 +32,11 @@ import thaumcraft.api.research.ResearchEntry;
 import thaumcraft.api.research.ResearchStage;
 import thaumcraft.common.lib.utils.HexUtils;
 
-public abstract class OldResearchManager {
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
-    public static ArrayList<BaseCurio> CURIOS = new ArrayList<>();
+public abstract class OldResearchManager {
     private static final String NOTES_TAG = "THAUMCRAFT.NOTE.COUNT";
     private static final String ASPECT_TAG = "THAUMCRAFT.ASPECTS";
     private static final String SCANNED_OBJ_TAG = "THAUMCRAFT.SCAN.OBJECTS";
@@ -118,7 +113,7 @@ public abstract class OldResearchManager {
         ResearchNoteData data = new ResearchNoteData();
         data.key = key;
         Aspect[] asps = Aspect.aspects.values().toArray(new Aspect[0]);
-        data.color =  asps[RANDOM.nextInt(asps.length)].getColor();
+        data.color = asps[RANDOM.nextInt(asps.length)].getColor();
         updateData(note, data);
         return note;
     }
@@ -132,7 +127,7 @@ public abstract class OldResearchManager {
     }
 
     public static void givePlayerResearchNote(World world, EntityPlayer player, String key) {
-        if(!hasResearchNote(player, key)
+        if (!hasResearchNote(player, key)
                 && consumeInkFromPlayer(player, false)
                 && OldResearchUtils.consumeInventoryItem(player, Items.PAPER)
         ) {
@@ -141,11 +136,11 @@ public abstract class OldResearchManager {
             int complexity = getResearchComplexity(player, key);
             ResearchNoteData data = getData(note);
             AspectList aspects = (RESEARCH_ASPECTS.containsKey(key))
-                                    ? RESEARCH_ASPECTS.get(key)
-                                    : getRandomAspects(world.rand, complexity, complexity + 2);
+                    ? RESEARCH_ASPECTS.get(key)
+                    : getRandomAspects(world.rand, complexity, complexity + 2);
             data.generateHexes(world, player, aspects, complexity);
             updateData(note, data);
-            if(!player.inventory.addItemStackToInventory(note)) {
+            if (!player.inventory.addItemStackToInventory(note)) {
                 ForgeHooks.onPlayerTossEvent(player, note, false);
             }
 
@@ -181,7 +176,7 @@ public abstract class OldResearchManager {
 
     public static String getStrippedKey(ItemStack stack) {
         ResearchNoteData data = getData(stack);
-        return (data != null)? getStrippedKey(data.key) : null;
+        return (data != null) ? getStrippedKey(data.key) : null;
     }
 
     public static String getStrippedKey(String key) {
@@ -193,32 +188,32 @@ public abstract class OldResearchManager {
         ArrayList<String> main = new ArrayList<>();
         ArrayList<String> remains = new ArrayList<>();
 
-        for(HexUtils.Hex hex : note.hexes.values()) {
-            if(note.hexEntries.get(hex.toString()).type == 1) {
+        for (HexUtils.Hex hex : note.hexes.values()) {
+            if (note.hexEntries.get(hex.toString()).type == 1) {
                 main.add(hex.toString());
             }
         }
 
-        for(HexUtils.Hex hex : note.hexes.values()) {
-            if(note.hexEntries.get(hex.toString()).type == 1) {
+        for (HexUtils.Hex hex : note.hexes.values()) {
+            if (note.hexEntries.get(hex.toString()).type == 1) {
                 main.remove(hex.toString());
                 checkConnections(note, hex, checked, main, remains, username);
                 break;
             }
         }
 
-        if(main.size() != 0) {
+        if (main.size() != 0) {
             return false;
         } else {
             ArrayList<String> remove = new ArrayList<>();
 
-            for(HexUtils.Hex hex : note.hexes.values()) {
-                if(note.hexEntries.get(hex.toString()).type != 1 && !remains.contains(hex.toString())) {
+            for (HexUtils.Hex hex : note.hexes.values()) {
+                if (note.hexEntries.get(hex.toString()).type != 1 && !remains.contains(hex.toString())) {
                     remove.add(hex.toString());
                 }
             }
 
-            for(String s : remove) {
+            for (String s : remove) {
                 note.hexEntries.remove(s);
                 note.hexes.remove(s);
             }
@@ -232,14 +227,14 @@ public abstract class OldResearchManager {
     private static void checkConnections(ResearchNoteData note, HexUtils.Hex hex, ArrayList<String> checked, ArrayList<String> main, ArrayList<String> remains, String username) {
         checked.add(hex.toString());
 
-        for(int a = 0; a < 6; ++a) {
+        for (int a = 0; a < 6; ++a) {
             HexUtils.Hex target = hex.getNeighbour(a);
-            if(!checked.contains(target.toString()) && note.hexEntries.containsKey(target.toString()) && note.hexEntries.get(target.toString()).type >= 1) {
+            if (!checked.contains(target.toString()) && note.hexEntries.containsKey(target.toString()) && note.hexEntries.get(target.toString()).type >= 1) {
                 Aspect aspect1 = note.hexEntries.get(hex.toString()).aspect;
                 Aspect aspect2 = note.hexEntries.get(target.toString()).aspect;
-                if(OldResearch.proxy.getPlayerKnowledge().hasDiscoveredAspect(username, aspect1) && OldResearch.proxy.getPlayerKnowledge().hasDiscoveredAspect(username, aspect2) && (!aspect1.isPrimal() && (aspect1.getComponents()[0] == aspect2 || aspect1.getComponents()[1] == aspect2) || !aspect2.isPrimal() && (aspect2.getComponents()[0] == aspect1 || aspect2.getComponents()[1] == aspect1))) {
+                if (OldResearch.proxy.getPlayerKnowledge().hasDiscoveredAspect(username, aspect1) && OldResearch.proxy.getPlayerKnowledge().hasDiscoveredAspect(username, aspect2) && (!aspect1.isPrimal() && (aspect1.getComponents()[0] == aspect2 || aspect1.getComponents()[1] == aspect2) || !aspect2.isPrimal() && (aspect2.getComponents()[0] == aspect1 || aspect2.getComponents()[1] == aspect1))) {
                     remains.add(target.toString());
-                    if(note.hexEntries.get(target.toString()).type == 1) {
+                    if (note.hexEntries.get(target.toString()).type == 1) {
                         main.remove(target.toString());
                     }
 
@@ -251,9 +246,9 @@ public abstract class OldResearchManager {
     }
 
     public static ResearchNoteData getData(ItemStack stack) {
-        if(stack != null && stack.getItem() == ModItems.RESEARCHNOTE) {
+        if (stack != null && stack.getItem() == ModItems.RESEARCHNOTE) {
             ResearchNoteData data = new ResearchNoteData();
-            if(stack.getTagCompound() == null) {
+            if (stack.getTagCompound() == null) {
                 return null;
             } else {
                 data.key = stack.getTagCompound().getString("key");
@@ -263,7 +258,7 @@ public abstract class OldResearchManager {
                 NBTTagList grid = stack.getTagCompound().getTagList("hexgrid", 10);
                 data.hexEntries = new HashMap<>();
 
-                for(int x = 0; x < grid.tagCount(); ++x) {
+                for (int x = 0; x < grid.tagCount(); ++x) {
                     NBTTagCompound nbt = grid.getCompoundTagAt(x);
                     int q = nbt.getByte("hexq");
                     int r = nbt.getByte("hexr");
@@ -291,7 +286,7 @@ public abstract class OldResearchManager {
     }
 
     public static void updateData(ItemStack stack, ResearchNoteData data) {
-        if(stack.getTagCompound() == null) {
+        if (stack.getTagCompound() == null) {
             stack.setTagCompound(new NBTTagCompound());
         }
 
@@ -301,12 +296,12 @@ public abstract class OldResearchManager {
         stack.getTagCompound().setInteger("copies", data.copies);
         NBTTagList gridtag = new NBTTagList();
 
-        for(HexUtils.Hex hex : data.hexes.values()) {
+        for (HexUtils.Hex hex : data.hexes.values()) {
             NBTTagCompound gt = new NBTTagCompound();
-            gt.setByte("hexq", (byte)hex.q);
-            gt.setByte("hexr", (byte)hex.r);
+            gt.setByte("hexq", (byte) hex.q);
+            gt.setByte("hexr", (byte) hex.r);
             gt.setByte("type", (byte) data.hexEntries.get(hex.toString()).type);
-            if(data.hexEntries.get(hex.toString()).aspect != null) {
+            if (data.hexEntries.get(hex.toString()).aspect != null) {
                 gt.setString("aspect", data.hexEntries.get(hex.toString()).aspect.getTag());
             }
 
@@ -327,8 +322,8 @@ public abstract class OldResearchManager {
     }
 
     public static Aspect getCombinationResult(Aspect aspect1, Aspect aspect2) {
-        for(Aspect aspect : Aspect.aspects.values()) {
-            if(aspect.getComponents() != null && (aspect.getComponents()[0] == aspect1 && aspect.getComponents()[1] == aspect2 || aspect.getComponents()[0] == aspect2 && aspect.getComponents()[1] == aspect1)) {
+        for (Aspect aspect : Aspect.aspects.values()) {
+            if (aspect.getComponents() != null && (aspect.getComponents()[0] == aspect1 && aspect.getComponents()[1] == aspect2 || aspect.getComponents()[0] == aspect2 && aspect.getComponents()[1] == aspect1)) {
                 return aspect;
             }
         }
@@ -337,7 +332,7 @@ public abstract class OldResearchManager {
     }
 
     public static boolean completeAspectUnsaved(String username, Aspect aspect, int amount) {
-        if(aspect == null) {
+        if (aspect == null) {
             return false;
         } else {
             OldResearch.proxy.getPlayerKnowledge().addDiscoveredAspect(username, aspect);
@@ -352,14 +347,14 @@ public abstract class OldResearchManager {
 
     public static boolean completeScannedObjectUnsaved(String username, String object) {
         ArrayList<String> completed = OldResearch.proxy.getScannedObjects().get(username);
-        if(completed == null) {
+        if (completed == null) {
             completed = new ArrayList<>();
         }
 
-        if(!completed.contains(object)) {
+        if (!completed.contains(object)) {
             completed.add(object);
             String t = object.replaceFirst("#", "@");
-            if(object.startsWith("#") && completed.contains(t) && completed.remove(t)) {
+            if (object.startsWith("#") && completed.contains(t) && completed.remove(t)) {
                 ;
             }
 
@@ -371,14 +366,14 @@ public abstract class OldResearchManager {
 
     public static boolean completeScannedEntityUnsaved(String username, String key) {
         ArrayList<String> completed = OldResearch.proxy.getScannedEntities().get(username);
-        if(completed == null) {
+        if (completed == null) {
             completed = new ArrayList<>();
         }
 
-        if(!completed.contains(key)) {
+        if (!completed.contains(key)) {
             completed.add(key);
             String t = key.replaceFirst("#", "@");
-            if(key.startsWith("#") && completed.contains(t) && completed.remove(t)) {
+            if (key.startsWith("#") && completed.contains(t) && completed.remove(t)) {
                 ;
             }
 
@@ -391,7 +386,7 @@ public abstract class OldResearchManager {
     public static void loadPlayerData(EntityPlayer player, File file1, File file2, boolean legacy) {
         try {
             NBTTagCompound data = null;
-            if(file1 != null && file1.exists()) {
+            if (file1 != null && file1.exists()) {
                 try {
                     FileInputStream fileinputstream = new FileInputStream(file1);
                     data = CompressedStreamTools.readCompressed(fileinputstream);
@@ -401,9 +396,9 @@ public abstract class OldResearchManager {
                 }
             }
 
-            if(file1 == null || !file1.exists() || data == null || data.isEmpty()) {
+            if (file1 == null || !file1.exists() || data == null || data.isEmpty()) {
                 Thaumcraft.log.warn("Thaumcraft data not found for " + player.getGameProfile().getName() + ". Trying to load backup Thaumcraft data.");
-                if(file2 != null && file2.exists()) {
+                if (file2 != null && file2.exists()) {
                     try {
                         FileInputStream fileinputstream = new FileInputStream(file2);
                         data = CompressedStreamTools.readCompressed(fileinputstream);
@@ -414,7 +409,7 @@ public abstract class OldResearchManager {
                 }
             }
 
-            if(data != null) {
+            if (data != null) {
                 loadResearchCountNBT(data, player);
                 loadAspectNBT(data, player);
                 loadScannedNBT(data, player);
@@ -423,9 +418,9 @@ public abstract class OldResearchManager {
 //                    Thaumcraft.instance.runicEventHandler.isDirty = true;
 //                }
 
-                if(data.hasKey("Thaumcraft.eldritch")) {
+                if (data.hasKey("Thaumcraft.eldritch")) {
                     int warp = data.getInteger("Thaumcraft.eldritch");
-                    if(legacy && !data.hasKey("Thaumcraft.eldritch.sticky")) {
+                    if (legacy && !data.hasKey("Thaumcraft.eldritch.sticky")) {
                         warp /= 2;
                         OldResearch.proxy.getPlayerKnowledge().setWarpSticky(player.getGameProfile().getName(), warp);
                     }
@@ -433,21 +428,21 @@ public abstract class OldResearchManager {
                     OldResearch.proxy.getPlayerKnowledge().setWarpPerm(player.getGameProfile().getName(), warp);
                 }
 
-                if(data.hasKey("Thaumcraft.eldritch.temp")) {
+                if (data.hasKey("Thaumcraft.eldritch.temp")) {
                     OldResearch.proxy.getPlayerKnowledge().setWarpTemp(player.getGameProfile().getName(), data.getInteger("Thaumcraft.eldritch.temp"));
                 }
 
-                if(data.hasKey("Thaumcraft.eldritch.sticky")) {
+                if (data.hasKey("Thaumcraft.eldritch.sticky")) {
                     OldResearch.proxy.getPlayerKnowledge().setWarpSticky(player.getGameProfile().getName(), data.getInteger("Thaumcraft.eldritch.sticky"));
                 }
 
-                if(data.hasKey("Thaumcraft.eldritch.counter")) {
+                if (data.hasKey("Thaumcraft.eldritch.counter")) {
                     OldResearch.proxy.getPlayerKnowledge().setWarpCounter(player.getGameProfile().getName(), data.getInteger("Thaumcraft.eldritch.counter"));
                 } else {
                     OldResearch.proxy.getPlayerKnowledge().setWarpCounter(player.getGameProfile().getName(), 0);
                 }
             } else {
-                for(Aspect aspect : Aspect.getPrimalAspects()) {
+                for (Aspect aspect : Aspect.getPrimalAspects()) {
                     completeAspectUnsaved(player.getGameProfile().getName(), aspect, 15 + player.world.rand.nextInt(5));
                 }
 
@@ -461,21 +456,21 @@ public abstract class OldResearchManager {
     }
 
     public static void loadResearchCountNBT(NBTTagCompound entityData, EntityPlayer player) {
-        if(entityData.hasKey(NOTES_TAG)) {
+        if (entityData.hasKey(NOTES_TAG)) {
             OldResearch.proxy.getPlayerKnowledge().setResearchCompleted(player.getGameProfile().getName(), entityData.getInteger(NOTES_TAG));
         }
     }
 
     public static void loadAspectNBT(NBTTagCompound entityData, EntityPlayer player) {
-        if(entityData.hasKey(ASPECT_TAG)) {
+        if (entityData.hasKey(ASPECT_TAG)) {
             NBTTagList tagList = entityData.getTagList(ASPECT_TAG, 10);
 
-            for(int j = 0; j < tagList.tagCount(); ++j) {
+            for (int j = 0; j < tagList.tagCount(); ++j) {
                 NBTTagCompound rs = tagList.getCompoundTagAt(j);
-                if(rs.hasKey("key")) {
+                if (rs.hasKey("key")) {
                     Aspect aspect = Aspect.getAspect(rs.getString("key"));
                     int amount = rs.getInteger("amount");
-                    if(aspect != null) {
+                    if (aspect != null) {
                         completeAspectUnsaved(player.getGameProfile().getName(), aspect, amount);
                     }
                 }
@@ -487,18 +482,18 @@ public abstract class OldResearchManager {
     public static void loadScannedNBT(NBTTagCompound entityData, EntityPlayer player) {
         NBTTagList tagList = entityData.getTagList(SCANNED_OBJ_TAG, 10);
 
-        for(int j = 0; j < tagList.tagCount(); ++j) {
+        for (int j = 0; j < tagList.tagCount(); ++j) {
             NBTTagCompound rs = tagList.getCompoundTagAt(j);
-            if(rs.hasKey("key")) {
+            if (rs.hasKey("key")) {
                 completeScannedObjectUnsaved(player.getGameProfile().getName(), rs.getString("key"));
             }
         }
 
         tagList = entityData.getTagList(SCANNED_ENT_TAG, 10);
 
-        for(int j = 0; j < tagList.tagCount(); ++j) {
+        for (int j = 0; j < tagList.tagCount(); ++j) {
             NBTTagCompound rs = tagList.getCompoundTagAt(j);
-            if(rs.hasKey("key")) {
+            if (rs.hasKey("key")) {
                 completeScannedEntityUnsaved(player.getGameProfile().getName(), rs.getString("key"));
             }
         }
@@ -521,7 +516,7 @@ public abstract class OldResearchManager {
             data.setTag("Thaumcraft.eldritch.temp", new NBTTagInt(OldResearch.proxy.getPlayerKnowledge().getWarpTemp(player.getGameProfile().getName())));
             data.setTag("Thaumcraft.eldritch.sticky", new NBTTagInt(OldResearch.proxy.getPlayerKnowledge().getWarpSticky(player.getGameProfile().getName())));
             data.setTag("Thaumcraft.eldritch.counter", new NBTTagInt(OldResearch.proxy.getPlayerKnowledge().getWarpCounter(player.getGameProfile().getName())));
-            if(file1 != null && file1.exists()) {
+            if (file1 != null && file1.exists()) {
                 try {
                     Files.copy(file1, file2);
                 } catch (Exception var8) {
@@ -530,17 +525,18 @@ public abstract class OldResearchManager {
             }
 
             try {
-                if(file1 != null) {
+                if (file1 != null) {
                     FileOutputStream fileoutputstream = new FileOutputStream(file1);
                     CompressedStreamTools.writeCompressed(data, fileoutputstream);
                     fileoutputstream.close();
                 }
             } catch (Exception var9) {
                 Thaumcraft.log.error("Could not save research file for player " + player.getGameProfile().getName());
-                if(file1.exists()) {
+                if (file1.exists()) {
                     try {
                         file1.delete();
-                    } catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 success = false;
@@ -561,9 +557,9 @@ public abstract class OldResearchManager {
     public static void saveAspectNBT(NBTTagCompound entityData, EntityPlayer player) {
         NBTTagList tagList = new NBTTagList();
         AspectList res = OldResearch.proxy.getKnownAspects().get(player.getGameProfile().getName());
-        if(res != null && res.size() > 0) {
-            for(Aspect aspect : res.getAspects()) {
-                if(aspect != null) {
+        if (res != null && res.size() > 0) {
+            for (Aspect aspect : res.getAspects()) {
+                if (aspect != null) {
                     NBTTagCompound f = new NBTTagCompound();
                     f.setString("key", aspect.getTag());
                     f.setInteger("amount", res.getAmount(aspect));
@@ -578,9 +574,9 @@ public abstract class OldResearchManager {
     public static void saveScannedNBT(NBTTagCompound entityData, EntityPlayer player) {
         NBTTagList tagList = new NBTTagList();
         List<String> obj = OldResearch.proxy.getScannedObjects().get(player.getGameProfile().getName());
-        if(obj != null && obj.size() > 0) {
-            for(String object : obj) {
-                if(object != null) {
+        if (obj != null && obj.size() > 0) {
+            for (String object : obj) {
+                if (object != null) {
                     NBTTagCompound f = new NBTTagCompound();
                     f.setString("key", object);
                     tagList.appendTag(f);
@@ -591,9 +587,9 @@ public abstract class OldResearchManager {
         entityData.setTag(SCANNED_OBJ_TAG, tagList);
         tagList = new NBTTagList();
         List<String> ent = OldResearch.proxy.getScannedEntities().get(player.getGameProfile().getName());
-        if(ent != null && ent.size() > 0) {
-            for(String key : ent) {
-                if(key != null) {
+        if (ent != null && ent.size() > 0) {
+            for (String key : ent) {
+                if (key != null) {
                     NBTTagCompound f = new NBTTagCompound();
                     f.setString("key", key);
                     tagList.appendTag(f);
@@ -638,24 +634,6 @@ public abstract class OldResearchManager {
         } else {
             Thaumcraft.log.warn("Research file not found: " + loc);
         }
-    }
-
-    public static void initCurios() {
-        CURIOS.add((new BaseCurio("arcane")).setCategory("AUROMANCY"));
-        CURIOS.add((new BaseCurio("preserved")).setCategory("ALCHEMY"));
-        CURIOS.add((new BaseCurio("ancient")).setCategory("GOLEMANCY"));
-        CURIOS.add(
-            (new BaseCurio("eldritch"))
-                .setCategory("ELDRITCH")
-                .setWarp(IPlayerWarp.EnumWarpType.NORMAL, 1)
-                .setWarp(IPlayerWarp.EnumWarpType.TEMPORARY, 5)
-        );
-        CURIOS.add((new BaseCurio("knowledge")).setCategory("INFUSION"));
-        CURIOS.add((new BaseCurio("twisted")).setCategory("ARTIFICE"));
-        CURIOS.add(new RitesCurio());
-        BaseCurio basic = new BaseCurio("basic");
-        for (Aspect aspect : Aspect.getPrimalAspects()) basic.aspect(aspect, 15);
-        CURIOS.add(basic);
     }
 
     public static class HexEntry {

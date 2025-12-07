@@ -1,21 +1,21 @@
-package com.wonginnovations.oldresearch.integration.groovy;
+/*package com.wonginnovations.oldresearch.integration.groovy;
 
 import com.cleanroommc.groovyscript.api.GroovyPlugin;
 import com.cleanroommc.groovyscript.compat.mods.GroovyContainer;
-import com.wonginnovations.oldresearch.Tags;
-import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
 
 public class GroovyScriptModule implements GroovyPlugin {
 
     public final GroovyRegistry registry = new GroovyRegistry();
 
     @Override
-    public @NotNull String getModId() {
-        return Tags.MODID;
+    public @Nonnull String getModId() {
+        return "oldresearch";
     }
 
     @Override
-    public @NotNull String getContainerName() {
+    public @Nonnull String getContainerName() {
         return getModId();
     }
 
@@ -24,3 +24,4 @@ public class GroovyScriptModule implements GroovyPlugin {
         container.addPropertiesOfFields(this, false);
     }
 }
+*/

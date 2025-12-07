@@ -3,14 +3,11 @@ package com.wonginnovations.oldresearch.proxy;
 import com.wonginnovations.oldresearch.OldResearch;
 import com.wonginnovations.oldresearch.api.capabilities.PlayerAspects;
 import com.wonginnovations.oldresearch.common.blocks.ModBlocks;
-import com.wonginnovations.oldresearch.common.items.ItemCurio;
-import com.wonginnovations.oldresearch.common.items.ModItems;
 import com.wonginnovations.oldresearch.common.lib.network.PacketHandler;
-import com.wonginnovations.oldresearch.common.lib.research.PlayerKnowledge;
 import com.wonginnovations.oldresearch.common.lib.research.OldResearchManager;
+import com.wonginnovations.oldresearch.common.lib.research.PlayerKnowledge;
 import com.wonginnovations.oldresearch.common.tiles.TileResearchTable;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -26,10 +23,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import thaumcraft.api.ThaumcraftApi;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.blocks.BlocksTC;
-import thaumcraft.api.crafting.IDustTrigger;
-import thaumcraft.api.items.ItemsTC;
-import thaumcraft.api.research.ResearchCategories;
-import thaumcraft.common.lib.crafting.DustTriggerSimple;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -69,7 +62,6 @@ public class Proxy implements IGuiHandler {
         PacketHandler.preInit();
         PlayerAspects.preInit();
         GameRegistry.registerTileEntity(TileResearchTable.class, new ResourceLocation("oldresearch:TileResearchTable"));
-        OldResearchManager.initCurios();
 
         MinecraftForge.EVENT_BUS.register(OldResearch.instance);
     }
@@ -77,17 +69,14 @@ public class Proxy implements IGuiHandler {
     public void init(FMLInitializationEvent event) {
         NetworkRegistry.INSTANCE.registerGuiHandler(OldResearch.instance, this);
         this.registerDisplayInformation();
+
+        OldResearchManager.parseJsonResearch(new ResourceLocation("oldresearch", "research.json"));
     }
 
     public void postInit(FMLPostInitializationEvent event) {
-        ResearchCategories.getResearchCategory("BASICS").research.remove("KNOWLEDGETYPES");
-        ResearchCategories.getResearchCategory("BASICS").research.remove("THEORYRESEARCH");
-        ResearchCategories.getResearchCategory("BASICS").research.remove("CELESTIALSCANNING");
-        OldResearchManager.parseJsonResearch(new ResourceLocation("oldresearch", "research.json"));
         OldResearchManager.patchResearch();
         ThaumcraftApi.registerObjectTag(new ItemStack(ModBlocks.RESEARCHTABLE, 1, 32767), new AspectList(new ItemStack(BlocksTC.researchTable)));
         OldResearchManager.computeAspectComplexity();
-        IDustTrigger.registerDustTrigger(new DustTriggerSimple("", BlocksTC.tableWood, new ItemStack(BlocksTC.researchTable)));
     }
 
     public void registerDisplayInformation() {

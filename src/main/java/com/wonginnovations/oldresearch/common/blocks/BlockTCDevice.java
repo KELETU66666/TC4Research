@@ -1,7 +1,6 @@
 package com.wonginnovations.oldresearch.common.blocks;
 
 import com.google.common.collect.UnmodifiableIterator;
-import java.util.ArrayList;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -15,6 +14,8 @@ import thaumcraft.common.blocks.IBlockEnabled;
 import thaumcraft.common.blocks.IBlockFacing;
 import thaumcraft.common.blocks.IBlockFacingHorizontal;
 import thaumcraft.common.lib.utils.BlockStateUtils;
+
+import java.util.ArrayList;
 
 public class BlockTCDevice extends BlockTCTile {
     public BlockTCDevice(Material mat, Class tc, String name) {
@@ -43,8 +44,8 @@ public class BlockTCDevice extends BlockTCTile {
                 return false;
             }
 
-            prop = (IProperty)var5.next();
-        } while(!prop.getName().equals("facing"));
+            prop = (IProperty) var5.next();
+        } while (!prop.getName().equals("facing"));
 
         world.setBlockState(pos, state.cycleProperty(prop));
         return true;
@@ -128,7 +129,7 @@ public class BlockTCDevice extends BlockTCTile {
     public int getMetaFromState(IBlockState state) {
         byte b0 = 0;
         int i = this instanceof IBlockFacingHorizontal ? b0 | state.getValue(IBlockFacingHorizontal.FACING).getIndex() : (this instanceof IBlockFacing ? b0 | state.getValue(IBlockFacing.FACING).getIndex() : b0);
-        if (this instanceof IBlockEnabled && !(Boolean)state.getValue(IBlockEnabled.ENABLED)) {
+        if (this instanceof IBlockEnabled && !(Boolean) state.getValue(IBlockEnabled.ENABLED)) {
             i |= 8;
         }
 

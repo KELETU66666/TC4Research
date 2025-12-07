@@ -73,7 +73,7 @@ public class GuiResearchTable extends GuiContainer {
         this.galFontRenderer = FMLClientHandler.instance().getClient().standardGalacticFontRenderer;
         this.username = player.getGameProfile().getName();
         this.player = player;
-        RESEARCHEXPERTISE = ThaumcraftCapabilities.getKnowledge(player).isResearchComplete("RESEARCHEXPERTISE");
+        RESEARCHEXPERTISE = ThaumcraftCapabilities.getKnowledge(player).isResearchComplete("THEORYRESEARCH");
         RESEARCHMASTERY = ThaumcraftCapabilities.getKnowledge(player).isResearchComplete("RESEARCHMASTERY");
         RESEARCHDUPE = ThaumcraftCapabilities.getKnowledge(player).isResearchComplete("RESEARCHDUPE");
     }

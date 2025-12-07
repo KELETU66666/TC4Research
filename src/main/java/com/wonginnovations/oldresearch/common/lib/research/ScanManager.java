@@ -65,26 +65,33 @@ public class ScanManager {
     public static int checkAndSyncAspectKnowledge(EntityPlayer player, Aspect aspect, int amount) {
         PlayerKnowledge rp = OldResearch.proxy.getPlayerKnowledge();
         int save = 0;
-        if(!rp.hasDiscoveredAspect(player.getGameProfile().getName(), aspect)) {
-            PacketHandler.INSTANCE.sendTo(new PacketAspectDiscovery(aspect.getTag()), (EntityPlayerMP)player);
+        if (!rp.hasDiscoveredAspect(player.getGameProfile().getName(), aspect)) {
+            PacketHandler.INSTANCE.sendTo(new PacketAspectDiscovery(aspect.getTag()), (EntityPlayerMP) player);
+
             amount += 2;
             save = amount;
         }
 
-        if(rp.getAspectPoolFor(player.getGameProfile().getName(), aspect) >= ModConfig.aspectTotalCap) {
-            amount = (int)Math.sqrt(amount);
+        if (rp.getAspectPoolFor(player.getGameProfile().getName(), aspect) >= ModConfig.aspectTotalCap) {
+            amount = (int) Math.sqrt(amount);
         }
 
-        if(amount > 1 && (float)rp.getAspectPoolFor(player.getGameProfile().getName(), aspect) >= (float)ModConfig.aspectTotalCap * 1.25F) {
+        if (amount > 1 && (float) rp.getAspectPoolFor(player.getGameProfile().getName(), aspect) >= (float) ModConfig.aspectTotalCap * 1.25F) {
             amount = 1;
         }
 
-        if(rp.addAspectPool(player.getGameProfile().getName(), aspect, amount)) {
-            PacketHandler.INSTANCE.sendTo(new PacketAspectPool(aspect.getTag(), amount, rp.getAspectPoolFor(player.getGameProfile().getName(), aspect)), (EntityPlayerMP)player);
+        float amount2 = (amount /= 5);
+        amount = (int) Math.ceil(amount2);
+        if (amount2 < 1) {
+            amount = 1;
+        }
+
+        if (rp.addAspectPool(player.getGameProfile().getName(), aspect, amount)) {
+            PacketHandler.INSTANCE.sendTo(new PacketAspectPool(aspect.getTag(), amount, rp.getAspectPoolFor(player.getGameProfile().getName(), aspect)), (EntityPlayerMP) player);
             save = amount;
         }
 
-        if(save > 0) {
+        if (save > 0) {
             OldResearchManager.completeAspect(player, aspect, rp.getAspectPoolFor(player.getGameProfile().getName(), aspect));
         }
 
@@ -111,7 +118,8 @@ public class ScanManager {
             if (aspect.getComponents() != null) {
                 for (Aspect component : aspect.getComponents()) {
                     if (!rp.hasDiscoveredAspect(player.getGameProfile().getName(), component)) {
-                        if (notify && player instanceof EntityPlayerMP) PacketHandler.INSTANCE.sendTo(new PacketAspectDiscoveryError(component.getTag()), (EntityPlayerMP) player);
+                        if (notify && player instanceof EntityPlayerMP)
+                            PacketHandler.INSTANCE.sendTo(new PacketAspectDiscoveryError(component.getTag()), (EntityPlayerMP) player);
                         return false;
                     }
                 }

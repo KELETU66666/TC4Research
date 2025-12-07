@@ -20,7 +20,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import thaumcraft.client.fx.ParticleEngine;
 import thaumcraft.client.fx.particles.FXGeneric;
 import thaumcraft.common.blocks.IBlockFacingHorizontal;
@@ -33,19 +33,19 @@ public class BlockResearchTable extends BlockTCDevice implements IBlockFacingHor
         this.setSoundType(SoundType.WOOD);
     }
 
-    public boolean isOpaqueCube(@NotNull IBlockState state) {
+    public boolean isOpaqueCube(@Nonnull IBlockState state) {
         return false;
     }
 
-    public boolean isFullCube(@NotNull IBlockState state) {
+    public boolean isFullCube(@Nonnull IBlockState state) {
         return false;
     }
 
-    public boolean isSideSolid(@NotNull IBlockState state, @NotNull IBlockAccess world, @NotNull BlockPos pos, @NotNull EnumFacing side) {
+    public boolean isSideSolid(@Nonnull IBlockState state, @Nonnull IBlockAccess world, @Nonnull BlockPos pos, @Nonnull EnumFacing side) {
         return false;
     }
 
-    public boolean onBlockActivated(World world, @NotNull BlockPos pos, @NotNull IBlockState state, @NotNull EntityPlayer player, @NotNull EnumHand hand, @NotNull EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, @Nonnull BlockPos pos, @Nonnull IBlockState state, @Nonnull EntityPlayer player, @Nonnull EnumHand hand, @Nonnull EnumFacing side, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return true;
         } else {
@@ -61,7 +61,7 @@ public class BlockResearchTable extends BlockTCDevice implements IBlockFacingHor
     }
 
     @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(@NotNull IBlockState state, World world, @NotNull BlockPos pos, Random rand) {
+    public void randomDisplayTick(@Nonnull IBlockState state, World world, @Nonnull BlockPos pos, Random rand) {
         TileEntity te = world.getTileEntity(pos);
 //        if (te != null) te.invalidate();
         if (rand.nextInt(5) == 0 && te != null && ((TileResearchTable)te).hasResearchNote()) {
@@ -82,7 +82,7 @@ public class BlockResearchTable extends BlockTCDevice implements IBlockFacingHor
     }
 
     @Override
-    public @NotNull String getTranslationKey()
+    public @Nonnull String getTranslationKey()
     {
         return "tile.research_table";
     }

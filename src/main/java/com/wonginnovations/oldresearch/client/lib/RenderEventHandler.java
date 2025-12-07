@@ -1,7 +1,7 @@
 package com.wonginnovations.oldresearch.client.lib;
 
 import com.wonginnovations.oldresearch.OldResearch;
-import com.wonginnovations.oldresearch.Tags;
+
 import com.wonginnovations.oldresearch.common.lib.research.ScanManager;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = Tags.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = "oldresearch", value = Side.CLIENT)
 public abstract class RenderEventHandler {
     public static List<Object> blockTags = new ArrayList<>();
     public static float tagscale = 0.0F;

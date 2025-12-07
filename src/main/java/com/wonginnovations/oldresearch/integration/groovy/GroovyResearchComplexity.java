@@ -1,4 +1,4 @@
-package com.wonginnovations.oldresearch.integration.groovy;
+/*package com.wonginnovations.oldresearch.integration.groovy;
 
 import com.cleanroommc.groovyscript.sandbox.ClosureHelper;
 import com.wonginnovations.oldresearch.common.lib.research.DefaultResearchComplexity;
@@ -21,3 +21,4 @@ public class GroovyResearchComplexity extends DefaultResearchComplexity {
     }
 
 }
+*/

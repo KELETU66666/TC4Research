@@ -7,7 +7,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.items.IScribeTools;
 import thaumcraft.common.container.slot.SlotLimitedByClass;
@@ -40,7 +40,7 @@ public class ContainerResearchTable extends Container {
     }
 
     @Override
-    public @NotNull ItemStack transferStackInSlot(@NotNull EntityPlayer player, int slotIndex) {
+    public @Nonnull ItemStack transferStackInSlot(@Nonnull EntityPlayer player, int slotIndex) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(slotIndex);
         if (slot != null && slot.getHasStack()) {
@@ -65,7 +65,7 @@ public class ContainerResearchTable extends Container {
         return stack;
     }
 
-    public boolean canInteractWith(@NotNull EntityPlayer player) {
+    public boolean canInteractWith(@Nonnull EntityPlayer player) {
         return this.tileEntity.isUsableByPlayer(player);
     }
 

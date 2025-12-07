@@ -1,6 +1,6 @@
 package com.wonginnovations.oldresearch.proxy;
 
-import com.wonginnovations.oldresearch.Tags;
+
 import com.wonginnovations.oldresearch.common.lib.network.PacketHandler;
 import com.wonginnovations.oldresearch.common.lib.network.PacketScanSelfToServer;
 import com.wonginnovations.oldresearch.common.lib.network.PacketScanSlotToServer;
@@ -47,7 +47,7 @@ import thaumcraft.common.lib.SoundsTC;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-@Mod.EventBusSubscriber(modid = Tags.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = "oldresearch", value = Side.CLIENT)
 public class ProxyInventoryScanning {
     private static final int SCAN_TICKS = 25;
     private static final int SOUND_TICKS = 2;

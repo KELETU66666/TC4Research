@@ -13,9 +13,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 import thaumcraft.api.research.ResearchEntry;
 import thaumcraft.client.gui.GuiResearchBrowser;
+
+import javax.annotation.Nonnull;
 
 @SideOnly(Side.CLIENT)
 public class ResearchNoteToast implements IToast {
@@ -28,7 +29,7 @@ public class ResearchNoteToast implements IToast {
         this.entry = entry;
     }
 
-    public @NotNull IToast.Visibility draw(@NotNull GuiToast toastGui, long delta) {
+    public @Nonnull IToast.Visibility draw(@Nonnull GuiToast toastGui, long delta) {
         if (this.newDisplay) {
             this.firstDrawTime = delta;
             this.newDisplay = false;

@@ -1,7 +1,6 @@
 package com.wonginnovations.oldresearch.common.items;
 
 import com.wonginnovations.oldresearch.OldResearch;
-import com.wonginnovations.oldresearch.Tags;
 import com.wonginnovations.oldresearch.api.registration.IModelRegister;
 import com.wonginnovations.oldresearch.client.gui.ResearchNoteToast;
 import com.wonginnovations.oldresearch.common.lib.research.OldResearchManager;
@@ -14,26 +13,29 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
 import thaumcraft.api.research.ResearchCategories;
 import thaumcraft.api.research.ResearchEntry;
 import thaumcraft.common.lib.SoundsTC;
 import thaumcraft.common.lib.research.ResearchManager;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemResearchNote extends Item implements IModelRegister {
 
     public ItemResearchNote() {
-        this.setRegistryName(Tags.MODID + ":researchnote");
+        this.setRegistryName("oldresearch" + ":researchnote");
         this.setTranslationKey("researchnote");
         this.setHasSubtypes(true);
         this.setMaxDamage(0);
@@ -42,10 +44,10 @@ public class ItemResearchNote extends Item implements IModelRegister {
     }
 
     @Override
-    public @NotNull ActionResult<ItemStack> onItemRightClick(@NotNull World world, EntityPlayer player, @NotNull EnumHand hand) {
+    public @Nonnull ActionResult<ItemStack> onItemRightClick(@Nonnull World world, EntityPlayer player, @Nonnull EnumHand hand) {
         ItemStack stack = player.getHeldItem(hand);
 
-        if(OldResearchManager.getData(stack) != null && OldResearchManager.getData(stack).isComplete() && !ThaumcraftCapabilities.getKnowledge(player).isResearchComplete(OldResearchManager.getData(stack).key)) {
+        if (OldResearchManager.getData(stack) != null && OldResearchManager.getData(stack).isComplete() && !ThaumcraftCapabilities.getKnowledge(player).isResearchComplete(OldResearchManager.getData(stack).key)) {
             if (!world.isRemote) {
                 OldResearch.proxy.getPlayerKnowledge().incrementResearchCompleted(player.getGameProfile().getName());
                 ResearchManager.progressResearch(player, OldResearchManager.getData(stack).key);
@@ -68,7 +70,7 @@ public class ItemResearchNote extends Item implements IModelRegister {
     public static int getColorFromItemStack(ItemStack stack) {
         int c = 2337949;
         ResearchNoteData rd = OldResearchManager.getData(stack);
-        if(rd != null) {
+        if (rd != null) {
             c = rd.color;
         }
 
@@ -77,21 +79,21 @@ public class ItemResearchNote extends Item implements IModelRegister {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public @NotNull String getItemStackDisplayName(ItemStack itemstack) {
+    public @Nonnull String getItemStackDisplayName(ItemStack itemstack) {
         return itemstack.getItemDamage() < 64 ? I18n.format("item.researchnote.name") : I18n.format("item.discovery.name");
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, @NotNull List<String> tooltip, @NotNull ITooltipFlag flagIn) {
-        if(stack.getItemDamage() == 24 || stack.getItemDamage() == 42) {
+    public void addInformation(ItemStack stack, @Nullable World worldIn, @Nonnull List<String> tooltip, @Nonnull ITooltipFlag flagIn) {
+        if (stack.getItemDamage() == 24 || stack.getItemDamage() == 42) {
             tooltip.add(TextFormatting.GOLD + I18n.format("item.researchnote.unknown.1"));
             tooltip.add(TextFormatting.BLUE + I18n.format("item.researchnote.unknown.2"));
         }
 
         ResearchNoteData rd = OldResearchManager.getData(stack);
         ResearchEntry re = ResearchCategories.getResearch(OldResearchManager.getStrippedKey(stack));
-        if(rd != null && rd.key != null && re != null) {
+        if (rd != null && rd.key != null && re != null) {
             tooltip.add(TextFormatting.GOLD + re.getLocalizedName());
 //            int warp = OldResearchApi.getWarp(rd.key);
 //            if(warp > 0) {
@@ -108,17 +110,17 @@ public class ItemResearchNote extends Item implements IModelRegister {
 
     }
 
-    public @NotNull EnumRarity getRarity(ItemStack itemstack) {
+    public @Nonnull EnumRarity getRarity(ItemStack itemstack) {
         return itemstack.getItemDamage() < 64 ? EnumRarity.RARE : EnumRarity.EPIC;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void registerModels() {
-        ModelResourceLocation location0 = new ModelResourceLocation(Tags.MODID + ":researchnote", "inventory");
+        ModelResourceLocation location0 = new ModelResourceLocation("oldresearch" + ":researchnote", "inventory");
         ModelLoader.setCustomModelResourceLocation(this, 0, location0);
 
-        ModelResourceLocation location2 = new ModelResourceLocation(Tags.MODID + ":discovery", "inventory");
+        ModelResourceLocation location2 = new ModelResourceLocation("oldresearch" + ":discovery", "inventory");
         ModelLoader.setCustomModelResourceLocation(this, 64, location2);
     }
 

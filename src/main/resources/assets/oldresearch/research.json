@@ -1,7 +1,7 @@
 {
   "entries": [
     {
-      "key": "RESEARCH",
+      "key": "KNOWLEDGETYPES",
       "name": "research.RESEARCH.title",
       "icons": [ "thaumcraft:textures/items/scribing_tools.png" ],
       "category": "BASICS", "location": [ 2,-1 ],
@@ -20,11 +20,11 @@
       ]
     },
     {
-      "key": "RESEARCHEXPERTISE",
+      "key": "THEORYRESEARCH",
       "name": "research.RESEARCHEXPERTISE.title",
       "icons": [ "oldresearch:textures/research/r_researcher1.png" ],
       "category": "BASICS", "location": [ 4,-1 ],
-      "parents": [ "RESEARCH" ],
+      "parents": [ "KNOWLEDGETYPES" ],
       "meta": [ "ROUND" , "HIDDEN" ],
       "stages": [
         {
@@ -40,8 +40,8 @@
       "key": "RESEARCHMASTERY",
       "name": "research.RESEARCHMASTERY.title",
       "icons": [ "oldresearch:textures/research/r_researcher2.png" ],
-      "category": "BASICS", "location": [ 4,1 ],
-      "parents": [ "RESEARCHEXPERTISE" ],
+      "category": "BASICS", "location": [ 6,1 ],
+      "parents": [ "THEORYRESEARCH" ],
       "meta": [ "ROUND" , "SPIKY", "HIDDEN" ],
       "stages": [
         {
@@ -58,7 +58,7 @@
       "key": "RESEARCHDUPE",
       "name": "research.RESEARCHDUPE.title",
       "icons": [ "oldresearch:textures/research/r_resdupe.png" ],
-      "category": "BASICS", "location": [ 4,3 ],
+      "category": "BASICS", "location": [ 6,3 ],
       "parents": [ "RESEARCHMASTERY" ],
       "meta": [ "ROUND" , "HIDDEN" ],
       "stages": [

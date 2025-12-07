@@ -1,10 +1,6 @@
 package com.wonginnovations.oldresearch.proxy;
 
 import com.wonginnovations.oldresearch.OldResearch;
-import com.wonginnovations.oldresearch.api.research.curio.BaseCurio;
-import com.wonginnovations.oldresearch.common.items.ItemCurio;
-import com.wonginnovations.oldresearch.common.items.ModItems;
-import com.wonginnovations.oldresearch.common.lib.research.OldResearchManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemBlock;
@@ -15,7 +11,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import thaumcraft.api.items.ItemsTC;
 
 public class ClientProxy extends Proxy {
 
@@ -40,13 +35,12 @@ public class ClientProxy extends Proxy {
     @Override
     public void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
-        this.registerModels();
     }
 
     @Override
     public void registerDisplayInformation() {
         OldResearch.aspectShift = FMLClientHandler.instance().hasOptifine();
-        if(Loader.isModLoaded("JustEnoughItems")) {
+        if (Loader.isModLoaded("JustEnoughItems")) {
             OldResearch.aspectShift = true;
         }
     }
@@ -65,12 +59,4 @@ public class ClientProxy extends Proxy {
     public World getClientWorld() {
         return Minecraft.getMinecraft().world;
     }
-
-    public void registerModels() {
-        int i = 0;
-        for (BaseCurio curio : OldResearchManager.CURIOS) {
-            ModelLoader.setCustomModelResourceLocation(ItemsTC.curio, i++, new ModelResourceLocation(curio.getTexture(), "inventory"));
-        }
-    }
-
 }

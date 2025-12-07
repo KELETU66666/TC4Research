@@ -26,7 +26,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import thaumcraft.api.aspects.Aspect;
 import thaumcraft.api.aspects.AspectList;
 import thaumcraft.api.capabilities.ThaumcraftCapabilities;
@@ -79,7 +79,7 @@ public class TileResearchTable extends TileThaumcraftInventory {
         super.readSyncNBT(nbtCompound);
     }
 
-    protected void setWorldCreate(@NotNull World worldIn) {
+    protected void setWorldCreate(@Nonnull World worldIn) {
         super.setWorldCreate(worldIn);
         if (!this.hasWorld()) {
             this.setWorld(worldIn);

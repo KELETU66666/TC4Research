@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -56,7 +56,7 @@ public abstract class ItemThaumometerMixin extends Item {
     }
 
     @Override
-    public void onUsingTick(@NotNull ItemStack stack, @NotNull EntityLivingBase p, int count) {
+    public void onUsingTick(@Nonnull ItemStack stack, @Nonnull EntityLivingBase p, int count) {
         if (!(p instanceof EntityPlayer) || ModConfig.instantScans) return;
         if(p.world.isRemote) {
             if (count <= 1) {
@@ -74,12 +74,12 @@ public abstract class ItemThaumometerMixin extends Item {
     }
 
     @Override
-    public int getMaxItemUseDuration(@NotNull ItemStack itemstack) {
+    public int getMaxItemUseDuration(@Nonnull ItemStack itemstack) {
         return 20;
     }
 
     @Override
-    public @NotNull EnumAction getItemUseAction(@NotNull ItemStack stack) {
+    public @Nonnull EnumAction getItemUseAction(@Nonnull ItemStack stack) {
         return EnumAction.NONE;
     }
 

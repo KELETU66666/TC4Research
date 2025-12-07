@@ -1,4 +1,4 @@
-package com.wonginnovations.oldresearch.integration.groovy;
+/*package com.wonginnovations.oldresearch.integration.groovy;
 
 import com.cleanroommc.groovyscript.api.GroovyBlacklist;
 import com.cleanroommc.groovyscript.compat.mods.thaumcraft.aspect.AspectStack;
@@ -61,3 +61,4 @@ public class GroovyRegistry extends VirtualizedRegistry<Boolean> {
     }
 
 }
+*/

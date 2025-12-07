@@ -14,6 +14,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import thaumcraft.api.aspects.Aspect;
+import thaumcraft.api.capabilities.ThaumcraftCapabilities;
+import thaumcraft.common.lib.research.ResearchManager;
 
 public class PacketAspectPool implements IMessage, IMessageHandler<PacketAspectPool, IMessage> {
     private String key;
@@ -55,6 +57,9 @@ public class PacketAspectPool implements IMessage, IMessageHandler<PacketAspectP
                         for (int a = 0; a < message.amount; ++a) {
                             PlayerNotifications.addAspectNotification(Aspect.getAspect(message.key));
                         }
+
+                        if (!ThaumcraftCapabilities.knowsResearch(Minecraft.getMinecraft().player, "!" + Aspect.getAspect(message.key).getTag().toLowerCase()))
+                            ResearchManager.completeResearch(Minecraft.getMinecraft().player, "!" + Aspect.getAspect(message.key).getTag().toLowerCase());
 
                         if (System.currentTimeMillis() > lastSound) {
                             Minecraft.getMinecraft().player.playSound(new SoundEvent(new ResourceLocation("entity.experience_orb.pickup")), 0.1F, 0.9F + Minecraft.getMinecraft().player.world.rand.nextFloat() * 0.2F);
